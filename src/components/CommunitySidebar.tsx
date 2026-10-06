@@ -1,3 +1,4 @@
+import { useI18n } from '../i18n/I18nContext';
 import type { Community } from '../types';
 
 interface CommunitySidebarProps {
@@ -18,10 +19,12 @@ export function CommunitySidebar({
   loading,
   onSelect,
 }: CommunitySidebarProps) {
+  const { t } = useI18n();
+
   return (
     <section className="sidebar-card">
       <header className="sidebar-card-header">
-        <h2>Communities</h2>
+        <h2>{t('community.title')}</h2>
       </header>
 
       {loading ? (
@@ -33,63 +36,53 @@ export function CommunitySidebar({
           ))}
         </ul>
       ) : communities.length === 0 ? (
-        <p className="sidebar-empty">No communities yet.</p>
+        <p className="sidebar-empty">{t('community.empty')}</p>
       ) : (
-        <>
-          <ul className="community-list">
-            <li>
+        <ul className="community-list">
+          <li>
+            <button
+              type="button"
+              className={`community-item ${selectedCommunityId === null ? 'active' : ''}`}
+              onClick={() => onSelect(null)}
+            >
+              <span className="community-item-body">
+                <span className="community-name">{t('community.allPosts')}</span>
+                <span className="community-meta">{t('community.allPostsMeta')}</span>
+              </span>
+            </button>
+          </li>
+          {communities.map((community) => (
+            <li key={community.id}>
               <button
                 type="button"
-                className={`community-item ${selectedCommunityId === null ? 'active' : ''}`}
-                onClick={() => onSelect(null)}
+                className={`community-item ${selectedCommunityId === community.id ? 'active' : ''}`}
+                onClick={() => onSelect(community.id)}
               >
+                {community.iconUrl ? (
+                  <img className="community-icon" src={community.iconUrl} alt="" />
+                ) : (
+                  <span className="community-icon community-icon-fallback" aria-hidden="true">
+                    {community.displayName.charAt(0).toUpperCase()}
+                  </span>
+                )}
                 <span className="community-item-body">
-                  <span className="community-name">All posts</span>
-                  <span className="community-meta">Everything across Nexa</span>
+                  <span className="community-name">
+                    {community.displayName}
+                    {community.isPrivate && (
+                      <span className="badge badge-private">{t('community.private')}</span>
+                    )}
+                  </span>
+                  <span className="community-meta">
+                    {community.memberCount === 1
+                      ? t('community.oneMember', { count: community.memberCount })
+                      : t('community.members', { count: community.memberCount })}
+                  </span>
                 </span>
               </button>
             </li>
-            {communities.map((community) => (
-              <li key={community.id}>
-                <button
-                  type="button"
-                  className={`community-item ${selectedCommunityId === community.id ? 'active' : ''}`}
-                  onClick={() => onSelect(community.id)}
-                >
-                  {community.iconUrl ? (
-                    <img className="community-icon" src={community.iconUrl} alt="" />
-                  ) : (
-                    <span className="community-icon community-icon-fallback" aria-hidden="true">
-                      {community.displayName.charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                  <span className="community-item-body">
-                    <span className="community-name">
-                      {community.displayName}
-                      {community.isPrivate && (
-                        <span className="badge badge-private">Private</span>
-                      )}
-                    </span>
-                    <span className="community-meta">
-                      {formatCount(community.memberCount)} members
-                    </span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </>
+          ))}
+        </ul>
       )}
     </section>
   );
-}
-
-function formatCount(value: number): string {
-  if (value >= 1_000_000) {
-    return `${(value / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
-  }
-  if (value >= 1_000) {
-    return `${(value / 1_000).toFixed(1).replace(/\.0$/, '')}k`;
-  }
-  return String(value);
 }

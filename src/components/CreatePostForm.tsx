@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getApiErrorMessage, postsApi } from '../services/api';
+import { useI18n } from '../i18n/I18nContext';
 import type { Community } from '../types';
 
 interface CreatePostFormProps {
@@ -19,6 +20,7 @@ export function CreatePostForm({
   onCreated,
   onCancel,
 }: CreatePostFormProps) {
+  const { t } = useI18n();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [communityId, setCommunityId] = useState<number | null>(defaultCommunityId);
@@ -44,7 +46,7 @@ export function CreatePostForm({
       });
       onCreated();
     } catch (err) {
-      setError(getApiErrorMessage(err, 'Could not publish your post. Please try again.'));
+      setError(getApiErrorMessage(err, t('composer.failed')));
     } finally {
       setSubmitting(false);
     }
@@ -52,10 +54,10 @@ export function CreatePostForm({
 
   return (
     <form className="composer" onSubmit={handleSubmit}>
-      <h2 className="composer-title">Create a post</h2>
+      <h2 className="composer-title">{t('composer.title')}</h2>
 
       <label className="field">
-        <span className="field-label">Community</span>
+        <span className="field-label">{t('composer.community')}</span>
         <select
           className="field-control"
           value={communityId ?? ''}
@@ -63,7 +65,7 @@ export function CreatePostForm({
           required
         >
           <option value="" disabled>
-            Choose a community
+            {t('composer.chooseCommunity')}
           </option>
           {communities.map((community) => (
             <option key={community.id} value={community.id}>
@@ -74,12 +76,12 @@ export function CreatePostForm({
       </label>
 
       <label className="field">
-        <span className="field-label">Title</span>
+        <span className="field-label">{t('composer.postTitle')}</span>
         <input
           className="field-control"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="An interesting title"
+          placeholder={t('composer.titlePlaceholder')}
           maxLength={300}
           required
         />
@@ -87,13 +89,13 @@ export function CreatePostForm({
 
       <label className="field">
         <span className="field-label">
-          Body <span className="field-hint">(optional)</span>
+          {t('composer.body')} <span className="field-hint">{t('composer.optional')}</span>
         </span>
         <textarea
           className="field-control field-textarea"
           value={content}
           onChange={(event) => setContent(event.target.value)}
-          placeholder="Share the details"
+          placeholder={t('composer.bodyPlaceholder')}
           rows={5}
         />
       </label>
@@ -106,10 +108,10 @@ export function CreatePostForm({
 
       <div className="composer-actions">
         <button type="submit" className="btn btn-primary" disabled={!canSubmit}>
-          {submitting ? 'Publishing...' : 'Publish'}
+          {submitting ? t('composer.publishing') : t('composer.publish')}
         </button>
         <button type="button" className="btn" onClick={onCancel} disabled={submitting}>
-          Cancel
+          {t('composer.cancel')}
         </button>
       </div>
     </form>

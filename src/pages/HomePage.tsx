@@ -3,7 +3,8 @@ import { communitiesApi, getApiErrorMessage, postsApi } from '../services/api';
 import { CommunitySidebar } from '../components/CommunitySidebar';
 import { CreatePostForm } from '../components/CreatePostForm';
 import { PostCard } from '../components/PostCard';
-import { UserMenu } from '../components/UserMenu';
+import { TopBar } from '../components/TopBar';
+import { useI18n } from '../i18n/I18nContext';
 import type { Community, Post } from '../types';
 
 const PAGE_SIZE = 10;
@@ -13,6 +14,7 @@ const PAGE_SIZE = 10;
  * served by the API. They are independent requests, so they load together.
  */
 export function HomePage() {
+  const { t } = useI18n();
   const [selectedCommunityId, setSelectedCommunityId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [showComposer, setShowComposer] = useState(false);
@@ -59,7 +61,7 @@ export function HomePage() {
         setCommunities(communityResponse.data);
       } catch (err) {
         if (!cancelled) {
-          setError(getApiErrorMessage(err, 'Could not load your feed. Please try again.'));
+          setError(getApiErrorMessage(err, t('feed.loadFailed')));
         }
       } finally {
         if (!cancelled) {
@@ -85,7 +87,7 @@ export function HomePage() {
     try {
       await loadFeed(page);
     } catch (err) {
-      setError(getApiErrorMessage(err, 'Could not load your feed. Please try again.'));
+      setError(getApiErrorMessage(err, t('feed.loadFailed')));
     } finally {
       setLoading(false);
     }
@@ -106,7 +108,7 @@ export function HomePage() {
       setTotalPages(response.totalPages);
       setPage(next);
     } catch (err) {
-      setError(getApiErrorMessage(err, 'Could not load more posts.'));
+      setError(getApiErrorMessage(err, t('feed.loadFailed')));
     } finally {
       setLoadingMore(false);
     }
@@ -119,7 +121,7 @@ export function HomePage() {
     try {
       await loadFeed(1);
     } catch (err) {
-      setError(getApiErrorMessage(err, 'Could not refresh the feed.'));
+      setError(getApiErrorMessage(err, t('feed.loadFailed')));
     } finally {
       setLoading(false);
     }
@@ -133,19 +135,11 @@ export function HomePage() {
 
   return (
     <div className="home-shell">
-      <header className="home-header">
-        <div className="home-header-inner">
-          <a className="brand" href="/home">
-            <svg className="brand-mark" width="28" height="28" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-              <circle cx="32" cy="32" r="30" stroke="currentColor" strokeWidth="5" />
-              <path d="M32 16L32 48M16 32L48 32" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
-            </svg>
-            <span className="brand-name">Nexa</span>
-          </a>
-
-          <UserMenu onCreatePost={() => setShowComposer((open) => !open)} composerOpen={showComposer} />
-        </div>
-      </header>
+      <TopBar
+        showCreatePost
+        onCreatePost={() => setShowComposer((open) => !open)}
+        composerOpen={showComposer}
+      />
 
       <div className="home-layout">
         <main className="home-main">
@@ -160,7 +154,7 @@ export function HomePage() {
 
           <div className="feed-toolbar">
             <h1 className="feed-heading">
-              {selectedCommunity ? selectedCommunity.displayName : 'Popular posts'}
+              {selectedCommunity ? selectedCommunity.displayName : t('feed.popular')}
             </h1>
             <span className="feed-count">{loading ? '' : `${total} posts`}</span>
           </div>
@@ -172,14 +166,14 @@ export function HomePage() {
           )}
 
           {loading ? (
-            <PostListSkeleton />
+            <PostListSkeleton label={t('feed.popular')} />
           ) : posts.length === 0 ? (
             <div className="feed-empty">
-              <h2>Nothing here yet</h2>
+              <h2>{t('feed.emptyTitle')}</h2>
               <p>
                 {selectedCommunity
-                  ? `No posts in ${selectedCommunity.displayName}. Be the first to post.`
-                  : 'No posts have been published yet. Be the first to post.'}
+                  ? t('feed.emptyCommunityBody', { community: selectedCommunity.displayName })
+                  : t('feed.emptyBody')}
               </p>
             </div>
           ) : (
@@ -193,7 +187,7 @@ export function HomePage() {
               {hasMore && (
                 <div className="load-more">
                   <button className="btn" onClick={() => void handleLoadMore()} disabled={loadingMore}>
-                    {loadingMore ? 'Loading...' : 'Load more posts'}
+                    {loadingMore ? t('feed.loading') : t('feed.loadMore')}
                   </button>
                 </div>
               )}
@@ -203,7 +197,7 @@ export function HomePage() {
           {!loading && error && posts.length === 0 && (
             <div className="load-more">
               <button className="btn btn-primary" onClick={() => void handleRefresh()}>
-                Try again
+                {t('feed.retry')}
               </button>
             </div>
           )}
@@ -222,9 +216,9 @@ export function HomePage() {
   );
 }
 
-function PostListSkeleton() {
+function PostListSkeleton({ label }: { label: string }) {
   return (
-    <ul className="post-list" aria-busy="true" aria-label="Loading posts">
+    <ul className="post-list" aria-busy="true" aria-label={label}>
       {[0, 1, 2, 3].map((index) => (
         <li key={index} className="post-card skeleton">
           <div className="post-vote" />

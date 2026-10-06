@@ -4,6 +4,12 @@ import { useAuth } from '../context/AuthContext';
 import { getApiErrorMessage, usersApi } from '../services/api';
 import { CommentCard } from '../components/CommentCard';
 import { PostCard } from '../components/PostCard';
+import { TopBar } from '../components/TopBar';
+import { useI18n } from '../i18n/I18nContext';
+import type { TranslationKey } from '../i18n/translations';
+
+/** Signature of the `t` function, used by the shared date helper. */
+type Translate = ReturnType<typeof useI18n>['t'];
 import type { Comment, Post, User } from '../types';
 
 const PAGE_SIZE = 10;
@@ -27,41 +33,42 @@ type TabId = 'overview' | 'posts' | 'comments' | 'saved' | 'history' | 'hidden' 
 
 interface TabDefinition {
   id: TabId;
-  label: string;
+  /** Translation key, resolved with `t()` at render time. */
+  label: TranslationKey;
 }
 
 const TABS: TabDefinition[] = [
-  { id: 'overview', label: 'Visão geral' },
-  { id: 'posts', label: 'Posts' },
-  { id: 'comments', label: 'Comentários' },
-  { id: 'saved', label: 'Salvo' },
-  { id: 'history', label: 'Histórico' },
-  { id: 'hidden', label: 'Ocultado' },
-  { id: 'upvoted', label: 'Upvotes' },
-  { id: 'downvoted', label: 'Downvotes' },
+  { id: 'overview', label: 'profile.tabOverview' },
+  { id: 'posts', label: 'profile.tabPosts' },
+  { id: 'comments', label: 'profile.tabComments' },
+  { id: 'saved', label: 'profile.tabSaved' },
+  { id: 'history', label: 'profile.tabHistory' },
+  { id: 'hidden', label: 'profile.tabHidden' },
+  { id: 'upvoted', label: 'profile.tabUpvoted' },
+  { id: 'downvoted', label: 'profile.tabDownvoted' },
 ];
 
 /** Short, non-technical copy for the tabs the API cannot serve yet. */
-const UNSUPPORTED_TABS: Record<string, { title: string; body: string }> = {
+const UNSUPPORTED_TABS: Record<string, { title: TranslationKey; body: TranslationKey }> = {
   saved: {
-    title: 'Nenhum post salvo',
-    body: 'Os posts que você salvar aparecem aqui.',
+    title: 'profile.savedEmptyTitle',
+    body: 'profile.savedEmptyBody',
   },
   history: {
-    title: 'Sem histórico',
-    body: 'Os posts que você visualizar aparecem aqui.',
+    title: 'profile.historyEmptyTitle',
+    body: 'profile.historyEmptyBody',
   },
   hidden: {
-    title: 'Nenhum post ocultado',
-    body: 'Os posts que você ocultar aparecem aqui.',
+    title: 'profile.hiddenEmptyTitle',
+    body: 'profile.hiddenEmptyBody',
   },
   upvoted: {
-    title: 'Nenhum voto positivo',
-    body: 'Os posts em que você votar aparecem aqui.',
+    title: 'profile.upvotedEmptyTitle',
+    body: 'profile.upvotedEmptyBody',
   },
   downvoted: {
-    title: 'Nenhum voto negativo',
-    body: 'Os posts em que você votar aparecem aqui.',
+    title: 'profile.downvotedEmptyTitle',
+    body: 'profile.downvotedEmptyBody',
   },
 };
 
@@ -75,6 +82,7 @@ function isSupported(id: TabId): boolean {
  */
 export function ProfilePage() {
   const { user: sessionUser } = useAuth();
+  const { t } = useI18n();
   const [tab, setTab] = useState<TabId>('overview');
 
   const [profile, setProfile] = useState<User | null>(null);
@@ -105,10 +113,10 @@ export function ProfilePage() {
   if (!userId) {
     return (
       <div className="home-shell">
-        <ProfileHeader />
+        <TopBar />
         <div className="home-layout">
           <main className="home-main">
-            <p className="form-error">Você precisa estar logado para ver seu perfil.</p>
+            <p className="form-error">{t('profile.needLogin')}</p>
           </main>
         </div>
       </div>
@@ -117,7 +125,7 @@ export function ProfilePage() {
 
   return (
     <div className="home-shell">
-      <ProfileHeader />
+      <TopBar />
 
       <div className="home-layout">
         <main className="home-main">
@@ -127,8 +135,8 @@ export function ProfilePage() {
             <ProfileCard profile={profile} />
           ) : (
             <div className="feed-empty">
-              <h2>Perfil indisponível</h2>
-              <p>Não conseguimos carregar seus dados agora.</p>
+              <h2>{t('profile.unavailableTitle')}</h2>
+              <p>{t('profile.unavailableBody')}</p>
               <button className="btn btn-primary" onClick={() => void loadProfile()}>
                 Tentar de novo
               </button>
@@ -154,8 +162,10 @@ function ProfileTabBar({
   active: TabId;
   onSelect: (tab: TabId) => void;
 }) {
+  const { t } = useI18n();
+
   return (
-    <div className="tab-bar" role="tablist" aria-label="Seções do perfil">
+    <div className="tab-bar" role="tablist" aria-label={t('app.name')}>
       {TABS.map((definition) => (
         <button
           key={definition.id}
@@ -169,7 +179,7 @@ function ProfileTabBar({
           }`}
           onClick={() => onSelect(definition.id)}
         >
-          {definition.label}
+          {t(definition.label)}
         </button>
       ))}
     </div>
@@ -181,6 +191,7 @@ function ProfileTabBar({
  * requests run together and each preview shows its own loading state.
  */
 function OverviewTab({ userId, profile }: { userId: number; profile: User | null }) {
+  const { t } = useI18n();
   const [posts, setPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [postTotal, setPostTotal] = useState(0);
@@ -227,15 +238,15 @@ function OverviewTab({ userId, profile }: { userId: number; profile: User | null
       {profile && (
         <dl className="profile-stats profile-stats-overview">
           <div className="profile-stat">
-            <dt>Posts</dt>
+            <dt>{t('profile.statsPosts')}</dt>
             <dd>{loading ? '—' : postTotal}</dd>
           </div>
           <div className="profile-stat">
-            <dt>Comentários</dt>
+            <dt>{t('profile.statsComments')}</dt>
             <dd>{loading ? '—' : commentTotal}</dd>
           </div>
           <div className="profile-stat">
-            <dt>Karma</dt>
+            <dt>{t('profile.karma')}</dt>
             <dd>{formatCount(profile.karma)}</dd>
           </div>
         </dl>
@@ -243,24 +254,24 @@ function OverviewTab({ userId, profile }: { userId: number; profile: User | null
 
       <section className="overview-section">
         <header className="overview-section-header">
-          <h2 className="feed-heading">Atividade recente</h2>
+          <h2 className="feed-heading">{t('profile.recentActivity')}</h2>
         </header>
 
         {loading ? (
           <PostListSkeleton />
         ) : posts.length === 0 && comments.length === 0 ? (
           <div className="feed-empty">
-            <h2>Nada publicado ainda</h2>
-            <p>Suas postagens e comentários aparecem aqui.</p>
+            <h2>{t('profile.nothingYet')}</h2>
+            <p>{t('profile.nothingYetBody')}</p>
             <Link to="/home" className="btn btn-primary">
-              Ir para o feed
+              {t('profile.goToFeed')}
             </Link>
           </div>
         ) : (
           <>
             {posts.length > 0 && (
               <>
-                <h3 className="overview-subheading">Últimas postagens</h3>
+                <h3 className="overview-subheading">{t('profile.latestPosts')}</h3>
                 <ul className="post-list">
                   {posts.map((post) => (
                     <PostCard key={post.id} post={post} />
@@ -271,7 +282,7 @@ function OverviewTab({ userId, profile }: { userId: number; profile: User | null
 
             {comments.length > 0 && (
               <>
-                <h3 className="overview-subheading">Últimos comentários</h3>
+                <h3 className="overview-subheading">{t('profile.latestComments')}</h3>
                 <ul className="post-list">
                   {comments.map((comment) => (
                     <CommentCard key={comment.id} comment={comment} />
@@ -287,6 +298,7 @@ function OverviewTab({ userId, profile }: { userId: number; profile: User | null
 }
 
 function PostsTab({ userId }: { userId: number }) {
+  const { t } = useI18n();
   const [posts, setPosts] = useState<Post[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -311,7 +323,7 @@ function PostsTab({ userId }: { userId: number }) {
         setTotalPages(response.totalPages);
       } catch (err) {
         if (!cancelled) {
-          setError(getApiErrorMessage(err, 'Não foi possível carregar suas postagens.'));
+          setError(getApiErrorMessage(err, t('profile.loadPostsFailed')));
         }
       } finally {
         if (!cancelled) {
@@ -335,7 +347,7 @@ function PostsTab({ userId }: { userId: number }) {
       setTotalPages(response.totalPages);
       setPage(response.page);
     } catch (err) {
-      setError(getApiErrorMessage(err, 'Não foi possível carregar mais postagens.'));
+      setError(getApiErrorMessage(err, t('profile.loadPostsFailed')));
     } finally {
       setLoadingMore(false);
     }
@@ -355,10 +367,10 @@ function PostsTab({ userId }: { userId: number }) {
         <PostListSkeleton />
       ) : posts.length === 0 ? (
         <div className="feed-empty">
-          <h2>Você ainda não publicou nada</h2>
-          <p>Quando você publicar algo, aparece aqui.</p>
+          <h2>{t('profile.noPostsTitle')}</h2>
+          <p>{t('profile.noPostsBody')}</p>
           <Link to="/home" className="btn btn-primary">
-            Ir para o feed
+            {t('profile.goToFeed')}
           </Link>
         </div>
       ) : (
@@ -372,7 +384,7 @@ function PostsTab({ userId }: { userId: number }) {
           {hasMore && (
             <div className="load-more">
               <button className="btn" onClick={() => void handleLoadMore()} disabled={loadingMore}>
-                {loadingMore ? 'Carregando...' : 'Carregar mais'}
+                {loadingMore ? t('feed.loading') : t('feed.loadMore')}
               </button>
             </div>
           )}
@@ -383,6 +395,7 @@ function PostsTab({ userId }: { userId: number }) {
 }
 
 function CommentsTab({ userId }: { userId: number }) {
+  const { t } = useI18n();
   const [comments, setComments] = useState<Comment[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -409,7 +422,7 @@ function CommentsTab({ userId }: { userId: number }) {
         setTotalPages(response.totalPages);
       } catch (err) {
         if (!cancelled) {
-          setError(getApiErrorMessage(err, 'Não foi possível carregar seus comentários.'));
+          setError(getApiErrorMessage(err, t('profile.loadCommentsFailed')));
         }
       } finally {
         if (!cancelled) {
@@ -433,7 +446,7 @@ function CommentsTab({ userId }: { userId: number }) {
       setTotalPages(response.totalPages);
       setPage(response.page);
     } catch (err) {
-      setError(getApiErrorMessage(err, 'Não foi possível carregar mais comentários.'));
+      setError(getApiErrorMessage(err, t('profile.loadCommentsFailed')));
     } finally {
       setLoadingMore(false);
     }
@@ -453,10 +466,10 @@ function CommentsTab({ userId }: { userId: number }) {
         <CommentListSkeleton />
       ) : comments.length === 0 ? (
         <div className="feed-empty">
-          <h2>Nenhum comentário ainda</h2>
-          <p>Seus comentários em postagens aparecem aqui.</p>
+          <h2>{t('profile.noCommentsTitle')}</h2>
+          <p>{t('profile.noCommentsBody')}</p>
           <Link to="/home" className="btn btn-primary">
-            Ir para o feed
+            {t('profile.goToFeed')}
           </Link>
         </div>
       ) : (
@@ -470,7 +483,7 @@ function CommentsTab({ userId }: { userId: number }) {
           {hasMore && (
             <div className="load-more">
               <button className="btn" onClick={() => void handleLoadMore()} disabled={loadingMore}>
-                {loadingMore ? 'Carregando...' : 'Carregar mais'}
+                {loadingMore ? t('feed.loading') : t('feed.loadMore')}
               </button>
             </div>
           )}
@@ -481,6 +494,7 @@ function CommentsTab({ userId }: { userId: number }) {
 }
 
 function UnsupportedTab({ tab }: { tab: TabId }) {
+  const { t } = useI18n();
   const copy = UNSUPPORTED_TABS[tab];
 
   return (
@@ -491,14 +505,16 @@ function UnsupportedTab({ tab }: { tab: TabId }) {
       className="tab-panel"
     >
       <div className="feed-empty">
-        <h2>{copy.title}</h2>
-        <p>{copy.body}</p>
+        <h2>{t(copy.title)}</h2>
+        <p>{t(copy.body)}</p>
       </div>
     </div>
   );
 }
 
 function ProfileCard({ profile }: { profile: User }) {
+  const { t } = useI18n();
+
   return (
     <section className="profile-card">
       <header className="profile-card-header">
@@ -513,7 +529,7 @@ function ProfileCard({ profile }: { profile: User }) {
         <div className="profile-identity">
           <h1 className="profile-name">{profile.displayName}</h1>
           <p className="profile-handle">u/{profile.username}</p>
-          <p className="profile-joined">Entrou em {formatDate(profile.createdAt)}</p>
+          <p className="profile-joined">{t('profile.joined', { date: formatDate(profile.createdAt, t) })}</p>
         </div>
       </header>
 
@@ -521,47 +537,19 @@ function ProfileCard({ profile }: { profile: User }) {
 
       <dl className="profile-stats">
         <div className="profile-stat">
-          <dt>Karma</dt>
+          <dt>{t('profile.karma')}</dt>
           <dd>{formatCount(profile.karma)}</dd>
         </div>
         <div className="profile-stat">
-          <dt>Email</dt>
+          <dt>{t('profile.email')}</dt>
           <dd className="profile-stat-email">{profile.email}</dd>
         </div>
         <div className="profile-stat">
-          <dt>Status</dt>
-          <dd className="profile-stat-status">{profile.isActive ? 'Ativo' : 'Inativo'}</dd>
+          <dt>{t('profile.status')}</dt>
+          <dd className="profile-stat-status">{profile.isActive ? t('profile.active') : t('profile.inactive')}</dd>
         </div>
       </dl>
     </section>
-  );
-}
-
-function ProfileHeader() {
-  const { user, signOut } = useAuth();
-
-  return (
-    <header className="home-header">
-      <div className="home-header-inner">
-        <Link className="brand" to="/home">
-          <svg className="brand-mark" width="28" height="28" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-            <circle cx="32" cy="32" r="30" stroke="currentColor" strokeWidth="5" />
-            <path d="M32 16L32 48M16 32L48 32" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
-          </svg>
-          <span className="brand-name">Nexa</span>
-        </Link>
-
-        <div className="user-menu">
-          <span className="avatar" aria-hidden="true">
-            {(user?.username ?? '?').charAt(0).toUpperCase()}
-          </span>
-          <span className="user-menu-name">u/{user?.username ?? 'guest'}</span>
-          <button type="button" className="btn" onClick={() => void signOut()}>
-            Sair
-          </button>
-        </div>
-      </div>
-    </header>
   );
 }
 
@@ -580,8 +568,9 @@ function ProfileSkeleton() {
 }
 
 function PostListSkeleton() {
+  const { t } = useI18n();
   return (
-    <ul className="post-list" aria-busy="true" aria-label="Carregando">
+    <ul className="post-list" aria-busy="true" aria-label={t('profile.yourPosts')}>
       {[0, 1, 2].map((index) => (
         <li key={index} className="post-card skeleton">
           <div className="post-vote" />
@@ -597,8 +586,10 @@ function PostListSkeleton() {
 }
 
 function CommentListSkeleton() {
+  const { t } = useI18n();
+
   return (
-    <ul className="post-list" aria-busy="true" aria-label="Carregando comentários">
+    <ul className="post-list" aria-busy="true" aria-label={t('profile.tabComments')}>
       {[0, 1, 2].map((index) => (
         <li key={index} className="comment-card">
           <div className="comment-card-body">
@@ -611,10 +602,10 @@ function CommentListSkeleton() {
   );
 }
 
-function formatDate(isoString: string): string {
+function formatDate(isoString: string, t: Translate): string {
   const date = new Date(isoString);
   if (Number.isNaN(date.getTime())) {
-    return 'recentemente';
+    return t('profile.recently');
   }
   return date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 }

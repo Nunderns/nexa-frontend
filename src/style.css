@@ -423,6 +423,172 @@ select.field-control {
   gap: 16px;
 }
 
+/* Wider bar: it now carries search plus five actions. */
+.home-header-inner-wide {
+  max-width: 1280px;
+  gap: 14px;
+}
+
+.home-header-search {
+  flex: 1;
+  min-width: 0;
+  max-width: 420px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Search
+   ========================================================================== */
+
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search-bar-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text);
+  pointer-events: none;
+}
+
+.search-bar-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px 0 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-muted);
+  color: var(--text-strong);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.search-bar-input::placeholder {
+  color: var(--text);
+  opacity: 0.8;
+}
+
+.search-bar-input:focus {
+  outline: none;
+  background: var(--surface);
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-soft);
+}
+
+/* Hides the native clear affordance so the field stays visually clean. */
+.search-bar-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ==========================================================================
+   Topbar icon buttons and popovers
+   ========================================================================== */
+
+.menu-anchor {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 36px;
+  padding: 0 9px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: var(--surface-muted);
+  color: var(--text-strong);
+}
+
+.icon-btn.active {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.icon-btn-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.menu-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  z-index: 60;
+  min-width: 180px;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  animation: menu-in 0.14s ease-out;
+}
+
+.menu-pop-right {
+  right: 0;
+}
+
+.menu-pop-title {
+  padding: 6px 10px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+
+.menu-pop-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-strong);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-pop-item:hover {
+  background: var(--surface-muted);
+}
+
+.menu-pop-item.active {
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.menu-pop-check {
+  width: 12px;
+  flex-shrink: 0;
+  font-weight: 800;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -493,11 +659,24 @@ select.field-control {
   background: var(--surface-muted);
 }
 
-.user-menu-name {
-  max-width: 110px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+/* Avatar-only variant: the trigger is just the profile picture. */
+.user-menu-trigger-avatar {
+  padding: 3px;
+  height: auto;
+  border-radius: 50%;
+  background: transparent;
+  border-color: transparent;
+}
+
+.user-menu-trigger-avatar:hover {
+  background: var(--surface-muted);
+  border-color: var(--border);
+}
+
+.avatar-md {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
 }
 
 .user-menu-panel {
@@ -530,8 +709,12 @@ select.field-control {
   align-items: center;
   gap: 10px;
   padding: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   border-bottom: 1px solid var(--border);
+}
+
+.user-menu-panel-identity {
+  min-width: 0;
 }
 
 .user-menu-panel-name {
@@ -564,6 +747,15 @@ select.field-control {
 
 .user-menu-item:hover {
   background: var(--surface-muted);
+}
+
+.user-menu-item-danger {
+  color: var(--danger);
+}
+
+.user-menu-item-danger:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 /* ==========================================================================
@@ -1000,6 +1192,274 @@ select.field-control {
 }
 
 /* ==========================================================================
+   Chat
+   ========================================================================== */
+
+.home-main-flush {
+  gap: 14px;
+}
+
+.chat-layout {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  gap: 0;
+  min-height: 480px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.chat-list {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.chat-list-title {
+  padding: 13px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+.chat-list-items {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  max-height: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.chat-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.chat-list-item:hover {
+  background: var(--surface-muted);
+}
+
+.chat-list-item.active {
+  background: var(--brand-soft);
+}
+
+.chat-list-item-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-list-item-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-list-item-preview {
+  font-size: 12px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-list-empty {
+  padding: 18px 14px;
+}
+
+.chat-list-empty-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.chat-list-empty-body {
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+.chat-thread {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.chat-thread-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.chat-thread-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.chat-thread-handle {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.chat-messages {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 400px;
+  min-height: 300px;
+}
+
+.chat-messages-empty {
+  margin: auto;
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+.chat-bubble-row {
+  display: flex;
+}
+
+.chat-bubble-row.mine {
+  justify-content: flex-end;
+}
+
+.chat-bubble {
+  max-width: 74%;
+  padding: 9px 13px;
+  border-radius: 16px;
+  background: var(--surface-muted);
+  color: var(--text-strong);
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.chat-bubble-row.mine .chat-bubble {
+  background: var(--brand);
+  color: #fff;
+}
+
+.chat-composer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.chat-composer-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.chat-placeholder {
+  margin: auto;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.chat-placeholder h2 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.chat-placeholder p {
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+@media (max-width: 900px) {
+  .chat-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chat-list {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chat-list-items {
+    max-height: 200px;
+  }
+}
+
+/* ==========================================================================
+   Settings / drafts
+   ========================================================================== */
+
+.page-title {
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+}
+
+.settings-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-success {
+  color: #1a7f4b;
+  font-size: 13px;
+  background: rgba(26, 127, 75, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .form-success {
+    color: #5fd39b;
+    background: rgba(95, 211, 155, 0.13);
+  }
+}
+
+.avatar-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-preview-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+/* ==========================================================================
    Profile tabs
    ========================================================================== */
 
@@ -1222,6 +1682,24 @@ select.field-control {
   }
 }
 
+@media (max-width: 900px) {
+  .home-header-inner-wide {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 16px;
+  }
+
+  .home-header-search {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .topbar-actions {
+    margin-left: auto;
+  }
+}
+
 @media (max-width: 640px) {
   body {
     font-size: 14px;
@@ -1251,12 +1729,12 @@ select.field-control {
     padding: 0 12px;
   }
 
-  .user-menu-name {
-    display: none;
-  }
-
   .feed-toolbar {
     flex-wrap: wrap;
+  }
+
+  .icon-btn-tag {
+    display: none;
   }
 }
 
