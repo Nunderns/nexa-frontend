@@ -126,7 +126,8 @@ export interface Comment {
   id: number;
   postId: number;
   authorId: number;
-  parentCommentId?: number | null;
+  /** Named `parentId` in the schema; null for a top-level comment. */
+  parentId?: number | null;
   content: string;
   score: number;
   upvoteCount: number;
@@ -135,6 +136,11 @@ export interface Comment {
   createdAt: string;
   updatedAt: string;
   author: PostAuthor;
+  /** Only included by `GET /users/:id/comments`. */
+  post?: {
+    id: number;
+    title: string;
+  };
 }
 
 export interface Media {

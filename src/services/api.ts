@@ -305,7 +305,23 @@ export const commentsApi = {
 export const usersApi = {
   getById: (id: number) => request<User>({ method: 'GET', url: `/users/${id}` }),
 
-  getByUsername: (username: string) => request<User>({ method: 'GET', url: `/users/username/${username}` }),
+  getByUsername: (username: string) =>
+    request<User>({ method: 'GET', url: `/users/username/${username}` }),
+
+  /** Posts authored by the user, newest first. */
+  getPosts: (id: number, page = 1, limit = 10) =>
+    request<Paginated<Post>>({
+      method: 'GET',
+      url: `/users/${id}/posts`,
+      params: { page, limit },
+    }),
+
+  getComments: (id: number, page = 1, limit = 10) =>
+    request<Paginated<Comment>>({
+      method: 'GET',
+      url: `/users/${id}/comments`,
+      params: { page, limit },
+    }),
 
   update: (id: number, data: Partial<Pick<User, 'displayName' | 'bio' | 'avatarUrl'>>) =>
     request<User>({ method: 'PUT', url: `/users/${id}`, data }),

@@ -38,6 +38,11 @@ export function UserMenu({
     };
   }, [open]);
 
+  const handleGoToProfile = () => {
+    setOpen(false);
+    navigate('/profile');
+  };
+
   const handleSignOut = async () => {
     setOpen(false);
     await signOut();
@@ -82,6 +87,16 @@ export function UserMenu({
               <p className="user-menu-panel-email">{user?.email}</p>
             </div>
           </div>
+
+          <button
+            type="button"
+            role="menuitem"
+            className="user-menu-item"
+            onClick={handleGoToProfile}
+          >
+            My profile
+          </button>
+
           <button type="button" role="menuitem" className="user-menu-item" onClick={handleSignOut}>
             Sign out
           </button>
