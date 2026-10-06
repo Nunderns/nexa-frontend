@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../i18n/I18nContext';
 import { getApiErrorMessage } from '../services/api';
 import type { LoginCredentials, RegisterCredentials } from '../types';
 
@@ -16,6 +17,7 @@ interface LocationState {
  */
 export function LandingPage() {
   const { signIn, signUp } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,12 +39,12 @@ export function LandingPage() {
     setError(null);
 
     if (!email || !password) {
-      setError('Enter your email and password.');
+      setError(t('landing.needCredentials'));
       return;
     }
 
     if (isRegister && (!username || !displayName)) {
-      setError('Choose a username and a display name.');
+      setError(t('landing.needProfileFields'));
       return;
     }
 
@@ -65,7 +67,7 @@ export function LandingPage() {
       }
       navigate(destination, { replace: true });
     } catch (err) {
-      setError(getApiErrorMessage(err, 'Could not sign you in. Please try again.'));
+      setError(getApiErrorMessage(err, t('landing.signInFailed')));
     } finally {
       setIsLoading(false);
     }
@@ -84,34 +86,32 @@ export function LandingPage() {
             <circle cx="32" cy="32" r="30" stroke="currentColor" strokeWidth="5" />
             <path d="M32 16L32 48M16 32L48 32" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
           </svg>
-          <h1 className="landing-title">Nexa</h1>
-          <p className="landing-subtitle">
-            Communities for the things you care about. Join the conversation.
-          </p>
+          <h1 className="landing-title">{t('app.name')}</h1>
+          <p className="landing-subtitle">{t('landing.subtitle')}</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           {isRegister && (
             <>
               <label className="field">
-                <span className="field-label">Username</span>
+                <span className="field-label">{t('landing.username')}</span>
                 <input
                   className="field-control"
                   value={username}
                   onChange={(event) => setUsername(event.target.value)}
-                  placeholder="letters, numbers and _"
+                  placeholder={t('landing.usernamePlaceholder')}
                   autoComplete="username"
                   required
                 />
               </label>
 
               <label className="field">
-                <span className="field-label">Display name</span>
+                <span className="field-label">{t('landing.displayName')}</span>
                 <input
                   className="field-control"
                   value={displayName}
                   onChange={(event) => setDisplayName(event.target.value)}
-                  placeholder="How your name appears"
+                  placeholder={t('landing.displayNamePlaceholder')}
                   autoComplete="name"
                   required
                 />
@@ -120,26 +120,30 @@ export function LandingPage() {
           )}
 
           <label className="field">
-            <span className="field-label">Email</span>
+            <span className="field-label">{t('landing.email')}</span>
             <input
               type="email"
               className="field-control"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="you@example.com"
+              placeholder={t('landing.emailPlaceholder')}
               autoComplete="email"
               required
             />
           </label>
 
           <label className="field">
-            <span className="field-label">Password</span>
+            <span className="field-label">{t('landing.password')}</span>
             <input
               type="password"
               className="field-control"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              placeholder={isRegister ? 'Uppercase, lowercase and a number' : 'Your password'}
+              placeholder={
+                isRegister
+                  ? t('landing.passwordPlaceholderRegister')
+                  : t('landing.passwordPlaceholderLogin')
+              }
               autoComplete={isRegister ? 'new-password' : 'current-password'}
               required
             />
@@ -152,25 +156,29 @@ export function LandingPage() {
           )}
 
           <button type="submit" className="btn btn-primary btn-block" disabled={isLoading}>
-            {isLoading ? 'Please wait...' : isRegister ? 'Create account' : 'Sign in'}
+            {isLoading
+              ? t('landing.pleaseWait')
+              : isRegister
+                ? t('landing.createAccount')
+                : t('landing.signInAction')}
           </button>
         </form>
 
         <p className="auth-switch">
-          {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
+          {isRegister ? t('landing.hasAccount') : t('landing.noAccount')}{' '}
           <button type="button" className="link-button" onClick={switchMode}>
-            {isRegister ? 'Sign in' : 'Sign up'}
+            {isRegister ? t('landing.signIn') : t('landing.signUp')}
           </button>
         </p>
 
         <p className="terms-text">
-          By continuing you agree to our{' '}
+          {t('landing.termsPrefix')}{' '}
           <a href="#terms" className="terms-link">
-            Terms of Service
+            {t('landing.terms')}
           </a>{' '}
-          and{' '}
+          {t('landing.termsAnd')}{' '}
           <a href="#privacy" className="terms-link">
-            Privacy Policy
+            {t('landing.privacy')}
           </a>
           .
         </p>

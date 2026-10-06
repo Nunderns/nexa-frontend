@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getApiErrorMessage, votesApi } from '../services/api';
+import { useI18n } from '../i18n/I18nContext';
 import type { Post, VoteValue } from '../types';
 
 interface PostCardProps {
@@ -10,6 +11,7 @@ interface PostCardProps {
 type LocalVote = VoteValue;
 
 export function PostCard({ post }: PostCardProps) {
+  const { t } = useI18n();
   const [vote, setVote] = useState<LocalVote>(0);
   const [score, setScore] = useState(post.score);
   const [pending, setPending] = useState(false);
@@ -40,11 +42,16 @@ export function PostCard({ post }: PostCardProps) {
       // Roll back so the UI never shows a vote the API rejected.
       setVote(previous);
       setScore((current) => current - delta);
-      setVoteError(getApiErrorMessage(err, 'Your vote could not be saved.'));
+      setVoteError(getApiErrorMessage(err, t('vote.failed')));
     } finally {
       setPending(false);
     }
   };
+
+  const commentLabel =
+    post.commentCount === 1
+      ? t('feed.comment', { count: post.commentCount })
+      : t('feed.comments', { count: post.commentCount });
 
   return (
     <li className="post-card" data-post-id={post.id}>
@@ -86,16 +93,18 @@ export function PostCard({ post }: PostCardProps) {
             {post.community?.iconUrl ? (
               <img className="community-chip-icon" src={post.community.iconUrl} alt="" />
             ) : null}
-            {post.community?.displayName ?? 'Unknown community'}
+            {post.community?.displayName ?? t('feed.unknownCommunity')}
           </span>
           <span className="separator">•</span>
-          <span className="author">u/{post.author?.username ?? 'unknown'}</span>
+          <span className="author">
+            u/{post.author?.username ?? t('feed.unknownAuthor')}
+          </span>
           <span className="separator">•</span>
           <time className="time" dateTime={post.createdAt}>
-            {getTimeAgo(post.createdAt)}
+            {getTimeAgo(post.createdAt, t)}
           </time>
-          {post.isPinned && <span className="badge">Pinned</span>}
-          {post.isLocked && <span className="badge">Locked</span>}
+          {post.isPinned && <span className="badge">{t('feed.pinned')}</span>}
+          {post.isLocked && <span className="badge">{t('feed.locked')}</span>}
         </div>
 
         <h2 className="post-title">{post.title}</h2>
@@ -112,9 +121,7 @@ export function PostCard({ post }: PostCardProps) {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
-            <span>
-              {post.commentCount} {post.commentCount === 1 ? 'comment' : 'comments'}
-            </span>
+            <span>{commentLabel}</span>
           </span>
         </div>
       </div>
@@ -122,7 +129,7 @@ export function PostCard({ post }: PostCardProps) {
   );
 }
 
-function formatScore(score: number): string {
+export function formatScore(score: number): string {
   const absolute = Math.abs(score);
   if (absolute >= 1_000_000) {
     return `${(score / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
@@ -133,7 +140,9 @@ function formatScore(score: number): string {
   return String(score);
 }
 
-function getTimeAgo(isoString: string): string {
+type Translate = ReturnType<typeof useI18n>['t'];
+
+export function getTimeAgo(isoString: string, t: Translate): string {
   const past = new Date(isoString);
   if (Number.isNaN(past.getTime())) {
     return '';
@@ -144,9 +153,9 @@ function getTimeAgo(isoString: string): string {
   const diffHours = Math.floor(diffMs / 3_600_000);
   const diffDays = Math.floor(diffMs / 86_400_000);
 
-  if (diffMins < 1) return 'just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffMins < 1) return t('time.now');
+  if (diffMins < 60) return t('time.minutesAgo', { count: diffMins });
+  if (diffHours < 24) return t('time.hoursAgo', { count: diffHours });
+  if (diffDays < 7) return t('time.daysAgo', { count: diffDays });
   return past.toLocaleDateString();
 }
