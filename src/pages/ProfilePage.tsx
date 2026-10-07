@@ -23,9 +23,6 @@ const OVERVIEW_PREVIEW = 3;
  *   saved    -> no SavedPost model, no GET /users/:id/saved
  *   history  -> no PostView model, views are not tracked
  *   hidden   -> Post has no isHidden column
- *   upvoted  -> PostVote stores the vote but there is no endpoint listing a
- *               user's votes (only GET /votes/post/:postId for a known post)
- *   downvoted-> same as upvoted
  *
  * Empty-state copy for those tabs lives in UNSUPPORTED_TABS below.
  */
@@ -62,18 +59,10 @@ const UNSUPPORTED_TABS: Record<string, { title: TranslationKey; body: Translatio
     title: 'profile.hiddenEmptyTitle',
     body: 'profile.hiddenEmptyBody',
   },
-  upvoted: {
-    title: 'profile.upvotedEmptyTitle',
-    body: 'profile.upvotedEmptyBody',
-  },
-  downvoted: {
-    title: 'profile.downvotedEmptyTitle',
-    body: 'profile.downvotedEmptyBody',
-  },
 };
 
 function isSupported(id: TabId): boolean {
-  return id === 'overview' || id === 'posts' || id === 'comments';
+  return id === 'overview' || id === 'posts' || id === 'comments' || id === 'upvoted' || id === 'downvoted';
 }
 
 /**
@@ -148,6 +137,8 @@ export function ProfilePage() {
           {tab === 'overview' && <OverviewTab userId={userId} profile={profile} />}
           {tab === 'posts' && <PostsTab userId={userId} />}
           {tab === 'comments' && <CommentsTab userId={userId} />}
+          {tab === 'upvoted' && <UpvotedTab userId={userId} />}
+          {tab === 'downvoted' && <DownvotedTab userId={userId} />}
           {!isSupported(tab) && <UnsupportedTab tab={tab} />}
         </main>
       </div>
@@ -477,6 +468,200 @@ function CommentsTab({ userId }: { userId: number }) {
           <ul className="post-list">
             {comments.map((comment) => (
               <CommentCard key={comment.id} comment={comment} />
+            ))}
+          </ul>
+
+          {hasMore && (
+            <div className="load-more">
+              <button className="btn" onClick={() => void handleLoadMore()} disabled={loadingMore}>
+                {loadingMore ? t('feed.loading') : t('feed.loadMore')}
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function UpvotedTab({ userId }: { userId: number }) {
+  const { t } = useI18n();
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await usersApi.getUpvoted(userId, page, PAGE_SIZE);
+        if (cancelled) {
+          return;
+        }
+        setPosts((current) => (page === 1 ? response.data : [...current, ...response.data]));
+        setTotal(response.total);
+        setTotalPages(response.totalPages);
+      } catch (err) {
+        if (!cancelled) {
+          setError(getApiErrorMessage(err, t('profile.loadPostsFailed')));
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, page]);
+
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+    try {
+      const response = await usersApi.getUpvoted(userId, page + 1, PAGE_SIZE);
+      setPosts((current) => [...current, ...response.data]);
+      setTotal(response.total);
+      setTotalPages(response.totalPages);
+      setPage(response.page);
+    } catch (err) {
+      setError(getApiErrorMessage(err, t('profile.loadPostsFailed')));
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  const hasMore = page < totalPages && posts.length < total;
+
+  return (
+    <div role="tabpanel" id="panel-upvoted" aria-labelledby="tab-upvoted" className="tab-panel">
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
+
+      {loading ? (
+        <PostListSkeleton />
+      ) : posts.length === 0 ? (
+        <div className="feed-empty">
+          <h2>{t('profile.noUpvotedTitle')}</h2>
+          <p>{t('profile.noUpvotedBody')}</p>
+          <Link to="/home" className="btn btn-primary">
+            {t('profile.goToFeed')}
+          </Link>
+        </div>
+      ) : (
+        <>
+          <ul className="post-list">
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </ul>
+
+          {hasMore && (
+            <div className="load-more">
+              <button className="btn" onClick={() => void handleLoadMore()} disabled={loadingMore}>
+                {loadingMore ? t('feed.loading') : t('feed.loadMore')}
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function DownvotedTab({ userId }: { userId: number }) {
+  const { t } = useI18n();
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await usersApi.getDownvoted(userId, page, PAGE_SIZE);
+        if (cancelled) {
+          return;
+        }
+        setPosts((current) => (page === 1 ? response.data : [...current, ...response.data]));
+        setTotal(response.total);
+        setTotalPages(response.totalPages);
+      } catch (err) {
+        if (!cancelled) {
+          setError(getApiErrorMessage(err, t('profile.loadPostsFailed')));
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, page]);
+
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+    try {
+      const response = await usersApi.getDownvoted(userId, page + 1, PAGE_SIZE);
+      setPosts((current) => [...current, ...response.data]);
+      setTotal(response.total);
+      setTotalPages(response.totalPages);
+      setPage(response.page);
+    } catch (err) {
+      setError(getApiErrorMessage(err, t('profile.loadPostsFailed')));
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  const hasMore = page < totalPages && posts.length < total;
+
+  return (
+    <div role="tabpanel" id="panel-downvoted" aria-labelledby="tab-downvoted" className="tab-panel">
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
+
+      {loading ? (
+        <PostListSkeleton />
+      ) : posts.length === 0 ? (
+        <div className="feed-empty">
+          <h2>{t('profile.noDownvotedTitle')}</h2>
+          <p>{t('profile.noDownvotedBody')}</p>
+          <Link to="/home" className="btn btn-primary">
+            {t('profile.goToFeed')}
+          </Link>
+        </div>
+      ) : (
+        <>
+          <ul className="post-list">
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
             ))}
           </ul>
 
