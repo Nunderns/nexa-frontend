@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getApiErrorMessage, votesApi } from '../services/api';
 import { useI18n } from '../i18n/I18nContext';
 import type { Post, VoteValue } from '../types';
@@ -107,7 +108,11 @@ export function PostCard({ post }: PostCardProps) {
           {post.isLocked && <span className="badge">{t('feed.locked')}</span>}
         </div>
 
-        <h2 className="post-title">{post.title}</h2>
+        <h2 className="post-title">
+          <Link to={`/posts/${post.id}`} className="post-title-link">
+            {post.title}
+          </Link>
+        </h2>
         {post.content && <p className="post-body">{post.content}</p>}
 
         {voteError && (
@@ -117,12 +122,19 @@ export function PostCard({ post }: PostCardProps) {
         )}
 
         <div className="post-actions">
-          <span className="action-btn action-btn-static">
+          <Link to={`/posts/${post.id}`} className="action-btn action-btn-static">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 4.5A7.5 7.5 0 0 0 4.5 12c0 5.25 7.5 11.25 7.5 11.25S19.5 17.25 19.5 12A7.5 7.5 0 0 0 12 4.5zm0 10a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
+            </svg>
+            {post.viewCount > 0 ? formatScore(post.viewCount) : null}
+          </Link>
+
+          <Link to={`/posts/${post.id}`} className="action-btn action-btn-static">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
             <span>{commentLabel}</span>
-          </span>
+          </Link>
         </div>
       </div>
     </li>

@@ -9,6 +9,8 @@ import type {
   LoginCredentials,
   Paginated,
   Post,
+  PostInsights,
+  PostViewBeacon,
   RegisterCredentials,
   User,
   Vote,
@@ -235,6 +237,25 @@ export const postsApi = {
     request<Post>({ method: 'PUT', url: `/posts/${id}`, data }),
 
   remove: (id: number) => request<void>({ method: 'DELETE', url: `/posts/${id}` }),
+
+  /**
+   * Fires the view beacon, called once per opened post.
+   *
+   * Failures are swallowed on purpose: reach is a nice-to-have, and a failed
+   * beacon must never interrupt reading the post. The API also deduplicates
+   * repeat visits, so a double render cannot double-count.
+   */
+  recordView: async (id: number): Promise<void> => {
+    try {
+      await request<PostViewBeacon>({ method: 'POST', url: `/posts/${id}/view` });
+    } catch {
+      // Ignored, see above.
+    }
+  },
+
+  /** Rejects with 403 for anyone but the post author or a community moderator. */
+  getInsights: (id: number) =>
+    request<PostInsights>({ method: 'GET', url: `/posts/${id}/insights` }),
 };
 
 // ---------------------------------------------------------------------------
