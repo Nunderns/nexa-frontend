@@ -5,6 +5,7 @@ import { ChatPage } from '../pages/ChatPage';
 import { CreatePage } from '../pages/CreatePage';
 import { DraftsPage } from '../pages/DraftsPage';
 import { HomePage } from '../pages/HomePage';
+import { PostDetailPage } from '../pages/PostDetailPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { NotificationsPage } from '../pages/NotificationsPage';
 import { ProfilePage } from '../pages/ProfilePage';
@@ -25,6 +26,7 @@ export function AppRoutes() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/home" element={<HomePage />} />
+        <Route path="/posts/:postId" element={<PostDetailPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/create" element={<CreatePage />} />
         <Route path="/chat" element={<ChatPage />} />
