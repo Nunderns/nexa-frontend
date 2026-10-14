@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // the user stuck in the app.
     if (current) {
       try {
-        await authApi.logout(current.id);
+        await authApi.logout();
       } catch {
         // Ignored on purpose: local session is cleared below regardless.
       }

@@ -194,8 +194,7 @@ export const authApi = {
   register: (credentials: RegisterCredentials) =>
     request<AuthResponse>({ method: 'POST', url: '/auth/register', data: credentials }),
 
-  logout: (userId: number) =>
-    request<void>({ method: 'POST', url: '/auth/logout', data: { userId } }),
+  logout: () => request<void>({ method: 'POST', url: '/auth/logout' }),
 
   refreshToken: (refreshToken: string) =>
     request<AuthResponse>({ method: 'POST', url: '/auth/refresh', data: { refreshToken } }),
