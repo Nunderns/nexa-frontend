@@ -725,10 +725,12 @@ function ProfileCard({ profile }: { profile: User }) {
           <dt>{t('profile.karma')}</dt>
           <dd>{formatCount(profile.karma)}</dd>
         </div>
-        <div className="profile-stat">
-          <dt>{t('profile.email')}</dt>
-          <dd className="profile-stat-email">{profile.email}</dd>
-        </div>
+        {profile.email && (
+          <div className="profile-stat">
+            <dt>{t('profile.email')}</dt>
+            <dd className="profile-stat-email">{profile.email}</dd>
+          </div>
+        )}
         <div className="profile-stat">
           <dt>{t('profile.status')}</dt>
           <dd className="profile-stat-status">{profile.isActive ? t('profile.active') : t('profile.inactive')}</dd>

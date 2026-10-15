@@ -43,7 +43,7 @@ export type SortBy = 'hot' | 'new' | 'top';
 export interface User {
   id: number;
   username: string;
-  email: string;
+  email?: string;
   displayName: string;
   bio?: string | null;
   avatarUrl?: string | null;

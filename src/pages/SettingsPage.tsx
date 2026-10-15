@@ -188,7 +188,7 @@ export function SettingsPage() {
               </div>
               <div className="profile-stat">
                 <dt>Email</dt>
-                <dd className="profile-stat-email">{profile?.email ?? '—'}</dd>
+                <dd className="profile-stat-email">{profile?.email || sessionUser?.email || '—'}</dd>
               </div>
               <div className="profile-stat">
                 <dt>{t('profile.karma')}</dt>
