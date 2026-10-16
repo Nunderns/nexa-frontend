@@ -97,8 +97,11 @@ export interface CreatePostDTO {
   title: string;
   content: string;
   communityId: number;
-  postType?: string;
+  /** Required by `POST /posts`; mirrors the backend `PostType` enum. */
+  postType: PostType;
 }
+
+export type PostType = 'TEXT' | 'IMAGE' | 'VIDEO' | 'LINK';
 
 /** One bar of the hourly views chart. The series is dense: zero hours included. */
 export interface InsightsHourlyView {
@@ -202,11 +205,17 @@ export interface Comment {
   };
 }
 
+/** Mirrors `MediaResponseDto`. */
 export interface Media {
   id: number;
-  url: string;
-  type: string;
+  userId: number;
   postId?: number | null;
+  commentId?: number | null;
+  storageKey: string;
+  url: string;
+  mimeType: string;
+  sizeBytes: number;
+  createdAt: string;
 }
 
 /** Public profile fields only, as `ChatParticipantResponseDto` defines them. */
