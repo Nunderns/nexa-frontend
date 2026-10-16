@@ -143,10 +143,9 @@ export function HomePage() {
 
       <div className="home-layout">
         <main className="home-main">
-          {showComposer && communities.length > 0 && (
+          {showComposer && (
             <CreatePostForm
-              communities={communities}
-              defaultCommunityId={selectedCommunityId ?? communities[0]?.id ?? null}
+              defaultCommunityId={selectedCommunityId}
               onCreated={handlePostCreated}
               onCancel={() => setShowComposer(false)}
             />

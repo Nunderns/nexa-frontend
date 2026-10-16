@@ -1064,6 +1064,126 @@ select.field-control {
   gap: 10px;
 }
 
+.post-type-bar {
+  box-shadow: none;
+  background: var(--surface-muted);
+}
+
+.post-type-tab {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.post-type-tab svg {
+  font-size: 16px;
+}
+
+.post-type-tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.field-error {
+  font-size: 12px;
+  color: var(--danger);
+}
+
+.composer-empty p {
+  font-size: 14px;
+}
+
+.media-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 140px;
+  padding: 20px;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.media-dropzone:hover,
+.media-dropzone:focus-within {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.media-dropzone-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.media-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.media-preview img,
+.media-preview video {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+
+.media-preview-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.media-preview-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.upload-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.upload-progress progress {
+  width: 100%;
+  height: 6px;
+  accent-color: var(--brand);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.field-control[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
 /* ==========================================================================
    Profile
    ========================================================================== */
