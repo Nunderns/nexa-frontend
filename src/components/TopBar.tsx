@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNotifications } from '../context/NotificationsContext';
 import { useI18n } from '../i18n/I18nContext';
 import { useDismissable } from '../hooks/useDismissable';
 import { LanguageMenu } from './LanguageMenu';
@@ -19,6 +20,11 @@ interface TopBarProps {
  */
 export function TopBar({ showCreatePost = false, onCreatePost, composerOpen }: TopBarProps) {
   const { t } = useI18n();
+  const { unreadCount } = useNotifications();
+  const notificationsLabel =
+    unreadCount > 0
+      ? t('notifications.navUnread', { count: String(unreadCount) })
+      : t('nav.notifications');
 
   return (
     <header className="home-header">
@@ -69,14 +75,19 @@ export function TopBar({ showCreatePost = false, onCreatePost, composerOpen }: T
 
           <NavLink
             to="/notifications"
-            className={({ isActive }) => `icon-btn ${isActive ? 'active' : ''}`}
-            aria-label={t('nav.notifications')}
-            title={t('nav.notifications')}
+            className={({ isActive }) => `icon-btn icon-btn-badged ${isActive ? 'active' : ''}`}
+            aria-label={notificationsLabel}
+            title={notificationsLabel}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
               <path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7" />
               <path d="M13.7 20a2 2 0 0 1-3.4 0" />
             </svg>
+            {unreadCount > 0 && (
+              <span className="nav-badge" aria-hidden="true">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
           </NavLink>
 
           <AccountMenu />
