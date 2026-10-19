@@ -19,6 +19,10 @@ import type {
   Chat,
   ChatList,
   Message,
+  AppNotification,
+  NotificationPage,
+  NotificationPreferences,
+  NotificationType,
 } from '../types';
 import { clearSession } from './session';
 
@@ -33,7 +37,7 @@ function unwrap<T>(envelope: ApiEnvelope<T>): T {
   return envelope.data;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -129,6 +133,23 @@ async function refreshAccessToken(): Promise<string | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * Refreshes the access token through the same single flight as the 401
+ * interceptor. Used by the notifications socket, whose handshake fails with
+ * `Unauthorized` once the 15-minute token expires. Resolves to `null` when
+ * the session cannot be recovered. `force` refreshes even when the token
+ * still looks valid locally.
+ */
+export async function refreshSession({ force = false } = {}): Promise<string | null> {
+  if (!force && !isAccessTokenExpired()) {
+    return localStorage.getItem('access_token');
+  }
+  refreshPromise = refreshPromise ?? refreshAccessToken();
+  return refreshPromise.finally(() => {
+    refreshPromise = null;
+  });
 }
 
 /** Broadcast so the auth context can drop its in-memory user and let the router redirect. */
@@ -361,6 +382,32 @@ export const chatApi = {
 
   sendMessage: (chatId: number, content: string) =>
     request<Message>({ method: 'POST', url: `/chats/${chatId}/messages`, data: { content } }),
+};
+
+// ---------------------------------------------------------------------------
+// Notifications API
+// ---------------------------------------------------------------------------
+
+export const notificationsApi = {
+  /** Pass the previous page's `nextCursor` as `cursor` for older items. */
+  list: (params: { cursor?: string; limit?: number; unreadOnly?: boolean; type?: NotificationType } = {}) =>
+    request<NotificationPage>({ method: 'GET', url: '/notifications', params }),
+
+  unreadCount: () => request<{ count: number }>({ method: 'GET', url: '/notifications/unread-count' }),
+
+  markRead: (id: string) =>
+    request<AppNotification>({ method: 'PATCH', url: `/notifications/${id}/read` }),
+
+  markAllRead: () =>
+    request<{ updated: number; unreadCount: number }>({ method: 'PATCH', url: '/notifications/read-all' }),
+
+  remove: (id: string) => request<void>({ method: 'DELETE', url: `/notifications/${id}` }),
+
+  getPreferences: () =>
+    request<NotificationPreferences>({ method: 'GET', url: '/notifications/preferences' }),
+
+  updatePreferences: (data: Partial<NotificationPreferences>) =>
+    request<NotificationPreferences>({ method: 'PATCH', url: '/notifications/preferences', data }),
 };
 
 // ---------------------------------------------------------------------------

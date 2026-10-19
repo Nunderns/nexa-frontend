@@ -2234,3 +2234,143 @@ select.field-control {
     transition-duration: 0.01ms !important;
   }
 }
+/* ------------------------------------------------------------------------ */
+/* Notifications                                                            */
+/* ------------------------------------------------------------------------ */
+
+.icon-btn-badged {
+  position: relative;
+}
+
+.nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 17px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.notifications-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tab-count {
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.notifications-offline {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.notification-item:first-child {
+  border-top: none;
+}
+
+.notification-item.unread {
+  background: var(--brand-soft);
+}
+
+.notification-main {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.notification-main:hover {
+  background: var(--surface-muted);
+}
+
+.notification-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.notification-body {
+  color: var(--text-strong);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.notification-item.unread .notification-body {
+  font-weight: 700;
+}
+
+.notification-meta {
+  font-size: 12px;
+}
+
+.notification-actions {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.notifications-more {
+  align-self: center;
+}
+
+.pref-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-strong);
+  cursor: pointer;
+}
+
+.pref-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand);
+}

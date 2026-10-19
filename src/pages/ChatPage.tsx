@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useI18n } from '../i18n/I18nContext';
 import { useAuth } from '../context/AuthContext';
 import { chatApi, getApiErrorMessage } from '../services/api';
@@ -7,14 +8,17 @@ import type { Chat, Message } from '../types';
 
 /**
  * Direct messages, backed by `/chats`. Conversations live in the left rail and
- * the selected thread on the right.
+ * the selected thread on the right. `?chat=<id>` (used by message
+ * notifications) opens that thread.
  */
 export function ChatPage() {
   const { t } = useI18n();
   const { user } = useAuth();
 
   const [chats, setChats] = useState<Chat[]>([]);
-  const [activeChatId, setActiveChatId] = useState<number | null>(null);
+  const [searchParams] = useSearchParams();
+  const requestedChatId = Number(searchParams.get('chat')) || null;
+  const [activeChatId, setActiveChatId] = useState<number | null>(requestedChatId);
   const [messages, setMessages] = useState<Message[]>([]);
 
   const [loadingChats, setLoadingChats] = useState(true);
@@ -38,6 +42,13 @@ export function ChatPage() {
   useEffect(() => {
     void loadChats();
   }, [loadChats]);
+
+  // Following a second message notification while already on /chat.
+  useEffect(() => {
+    if (requestedChatId !== null) {
+      setActiveChatId(requestedChatId);
+    }
+  }, [requestedChatId]);
 
   useEffect(() => {
     if (activeChatId === null) {
