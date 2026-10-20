@@ -90,12 +90,16 @@ export function PostCard({ post }: PostCardProps) {
 
       <div className="post-content">
         <div className="post-meta">
-          <span className="community-chip">
-            {post.community?.iconUrl ? (
-              <img className="community-chip-icon" src={post.community.iconUrl} alt="" />
-            ) : null}
-            {post.community?.displayName ?? t('feed.unknownCommunity')}
-          </span>
+          {post.community ? (
+            <Link to={communityPath(post.community.name)} className="community-chip community-chip-link">
+              {post.community.iconUrl ? (
+                <img className="community-chip-icon" src={post.community.iconUrl} alt="" />
+              ) : null}
+              {post.community.displayName}
+            </Link>
+          ) : (
+            <span className="community-chip">{t('feed.unknownCommunity')}</span>
+          )}
           <span className="separator">•</span>
           <span className="author">
             u/{post.author?.username ?? t('feed.unknownAuthor')}
@@ -139,6 +143,11 @@ export function PostCard({ post }: PostCardProps) {
       </div>
     </li>
   );
+}
+
+/** Community names are unique, so they make readable, stable URLs. */
+export function communityPath(name: string): string {
+  return `/c/${encodeURIComponent(name)}`;
 }
 
 export function formatScore(score: number): string {

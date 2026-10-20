@@ -174,6 +174,23 @@ export interface Community {
   creator?: PostAuthor;
 }
 
+export type CommunityRole = 'MEMBER' | 'MODERATOR' | 'OWNER';
+
+/** Mirrors `CommunityMembershipResponseDto`: `role` is null for non-members and banned users. */
+export interface CommunityMembership {
+  role: CommunityRole | null;
+  isBanned: boolean;
+}
+
+/** Mirrors `CommunityStatsResponseDto`. The week starts Monday 00:00 UTC. */
+export interface CommunityStats {
+  weekStart: string;
+  /** Distinct viewers of the community's posts, not visits to the page itself. */
+  visitors: number;
+  /** Posts plus comments created this week. */
+  contributions: number;
+}
+
 export interface CommunityMember {
   id: number;
   communityId: number;

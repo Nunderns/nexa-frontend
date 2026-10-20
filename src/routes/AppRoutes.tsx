@@ -2,6 +2,8 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { PublicOnlyRoute, ProtectedRoute } from './guards';
 import { LandingPage } from '../components/LandingPage';
 import { ChatPage } from '../pages/ChatPage';
+import { CommunityModPage } from '../pages/CommunityModPage';
+import { CommunityPage } from '../pages/CommunityPage';
 import { CreatePage } from '../pages/CreatePage';
 import { DraftsPage } from '../pages/DraftsPage';
 import { HomePage } from '../pages/HomePage';
@@ -27,6 +29,8 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route path="/home" element={<HomePage />} />
         <Route path="/posts/:postId" element={<PostDetailPage />} />
+        <Route path="/c/:name" element={<CommunityPage />} />
+        <Route path="/c/:name/mod" element={<CommunityModPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/create" element={<CreatePage />} />
         <Route path="/chat" element={<ChatPage />} />

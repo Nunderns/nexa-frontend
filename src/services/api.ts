@@ -5,6 +5,8 @@ import type {
   Comment,
   Community,
   CommunityMember,
+  CommunityMembership,
+  CommunityStats,
   CreatePostDTO,
   LoginCredentials,
   Media,
@@ -302,6 +304,14 @@ export const communitiesApi = {
   join: (id: number) => request<void>({ method: 'POST', url: `/communities/${id}/join` }),
 
   leave: (id: number) => request<void>({ method: 'POST', url: `/communities/${id}/leave` }),
+
+  /** The current user's role; drives Join/Leave and the moderator-only actions. */
+  getMembership: (id: number) =>
+    request<CommunityMembership>({ method: 'GET', url: `/communities/${id}/membership` }),
+
+  /** Rejects with 403 on a private community the user does not belong to. */
+  getStats: (id: number) =>
+    request<CommunityStats>({ method: 'GET', url: `/communities/${id}/stats` }),
 
   getMembers: (id: number, page = 1, limit = 20) =>
     request<Paginated<CommunityMember>>({
