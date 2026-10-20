@@ -2122,6 +2122,235 @@ select.field-control {
 }
 
 /* ==========================================================================
+   Community page
+   ========================================================================== */
+
+.community-chip-link {
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+.community-chip-link:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.community-hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.community-banner {
+  height: 128px;
+  background: linear-gradient(120deg, var(--brand), var(--brand-strong));
+  background-size: cover;
+  background-position: center;
+}
+
+.community-hero-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px 16px;
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.community-hero-icon {
+  width: 84px;
+  height: 84px;
+  margin-top: -28px;
+  border-radius: 50%;
+  border: 4px solid var(--surface);
+  object-fit: cover;
+  flex-shrink: 0;
+  font-size: 32px;
+}
+
+.community-hero-titles {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.community-hero-name {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--text-strong);
+  overflow-wrap: anywhere;
+}
+
+.community-hero-handle {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.community-hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.community-more-btn {
+  width: 38px;
+  padding: 0;
+}
+
+.community-menu {
+  min-width: 240px;
+}
+
+.menu-pop-item:disabled {
+  color: var(--text);
+  cursor: not-allowed;
+}
+
+.menu-pop-item:disabled:hover {
+  background: none;
+}
+
+.menu-pop-item .badge {
+  margin-left: auto;
+}
+
+.menu-pop-item-danger:not(:disabled) {
+  color: var(--danger);
+}
+
+.menu-pop-item-danger:not(:disabled):hover {
+  background: var(--danger-soft);
+}
+
+.badge-soon {
+  background: var(--surface-muted);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.badge-nsfw {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.community-about-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+}
+
+.community-about-description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-strong);
+  overflow-wrap: anywhere;
+}
+
+.community-facts {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.community-facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.community-facts dt {
+  color: var(--text);
+}
+
+.community-facts dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-strong);
+  text-align: right;
+}
+
+.community-stats {
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.community-stats h3 {
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+
+.community-stats-grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.community-stats-grid div {
+  display: flex;
+  /* The value reads first; `dt` stays first in the markup as `<dl>` requires. */
+  flex-direction: column-reverse;
+}
+
+.community-stats-grid dd {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 750;
+  color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.community-stats-grid dt {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.community-about-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.community-about-link.is-disabled {
+  color: var(--text);
+}
+
+@media (max-width: 640px) {
+  .community-banner {
+    height: 88px;
+  }
+
+  .community-hero-inner {
+    padding: 0 12px 14px;
+  }
+
+  .community-hero-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+  }
+
+  .community-hero-actions {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
    Responsive
    ========================================================================== */
 
