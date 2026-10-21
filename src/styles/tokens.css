@@ -1,0 +1,60 @@
+/* ==========================================================================
+   Nexa design tokens
+   ========================================================================== */
+
+:root {
+  --brand: #5b4bdb;
+  --brand-strong: #4a3ac4;
+  --brand-soft: rgba(91, 75, 219, 0.1);
+
+  --bg: #f4f5f9;
+  --surface: #ffffff;
+  --surface-muted: #f8f8fb;
+  --border: #e2e2ea;
+  --border-strong: #cbcbd8;
+
+  --text: #4a4a56;
+  --text-strong: #16161d;
+
+  --danger: #c8322f;
+  --danger-soft: rgba(200, 50, 47, 0.09);
+  --upvote: #ef5a3c;
+  --downvote: #5b7cfa;
+
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(16, 16, 30, 0.06);
+  --shadow: 0 6px 18px rgba(16, 16, 30, 0.07);
+  --shadow-lg: 0 20px 45px rgba(16, 16, 30, 0.16);
+
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --header-height: 60px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand: #8b7cff;
+    --brand-strong: #9d90ff;
+    --brand-soft: rgba(139, 124, 255, 0.16);
+
+    --bg: #101016;
+    --surface: #191921;
+    --surface-muted: #202029;
+    --border: #2c2c37;
+    --border-strong: #3d3d4b;
+
+    --text: #a9a9b8;
+    --text-strong: #f2f2f7;
+
+    --danger: #ff6b6b;
+    --danger-soft: rgba(255, 107, 107, 0.14);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.6);
+  }
+}

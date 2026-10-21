@@ -1,0 +1,177 @@
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { getApiErrorMessage } from '@/lib/api-client';
+import { useAuth } from '@/lib/auth';
+import { useI18n } from '@/lib/i18n/I18nContext';
+import type { LoginCredentials, RegisterCredentials } from '@/types/api';
+
+type Mode = 'login' | 'register';
+
+interface LocationState {
+  from?: string;
+}
+
+/**
+ * Sign-in and sign-up in one form, toggled by `mode`. On success it returns to
+ * the protected page that sent the visitor here, otherwise `/home`.
+ */
+export function AuthForm() {
+  const { signIn, signUp } = useAuth();
+  const { t } = useI18n();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [mode, setMode] = useState<Mode>('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const isRegister = mode === 'register';
+
+  // Return to whatever protected page sent us here, otherwise go to /home.
+  const destination = (location.state as LocationState | null)?.from ?? '/home';
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(null);
+
+    if (!email || !password) {
+      setError(t('landing.needCredentials'));
+      return;
+    }
+
+    if (isRegister && (!username || !displayName)) {
+      setError(t('landing.needProfileFields'));
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      if (isRegister) {
+        // `bio` is required by RegisterDto, so always send a string.
+        const credentials: RegisterCredentials = {
+          username,
+          email,
+          password,
+          displayName,
+          bio: '',
+        };
+        await signUp(credentials);
+      } else {
+        const credentials: LoginCredentials = { email, password };
+        await signIn(credentials);
+      }
+      navigate(destination, { replace: true });
+    } catch (err) {
+      setError(getApiErrorMessage(err, t('landing.signInFailed')));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const switchMode = () => {
+    setMode((current) => (current === 'login' ? 'register' : 'login'));
+    setError(null);
+  };
+
+  return (
+    <>
+      <form className="auth-form" onSubmit={handleSubmit} noValidate>
+        {isRegister && (
+          <>
+            <label className="field">
+              <span className="field-label">{t('landing.username')}</span>
+              <input
+                className="field-control"
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
+                placeholder={t('landing.usernamePlaceholder')}
+                autoComplete="username"
+                required
+              />
+            </label>
+
+            <label className="field">
+              <span className="field-label">{t('landing.displayName')}</span>
+              <input
+                className="field-control"
+                value={displayName}
+                onChange={(event) => setDisplayName(event.target.value)}
+                placeholder={t('landing.displayNamePlaceholder')}
+                autoComplete="name"
+                required
+              />
+            </label>
+          </>
+        )}
+
+        <label className="field">
+          <span className="field-label">{t('landing.email')}</span>
+          <input
+            type="email"
+            className="field-control"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder={t('landing.emailPlaceholder')}
+            autoComplete="email"
+            required
+          />
+        </label>
+
+        <label className="field">
+          <span className="field-label">{t('landing.password')}</span>
+          <input
+            type="password"
+            className="field-control"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder={
+              isRegister
+                ? t('landing.passwordPlaceholderRegister')
+                : t('landing.passwordPlaceholderLogin')
+            }
+            autoComplete={isRegister ? 'new-password' : 'current-password'}
+            required
+          />
+        </label>
+
+        {error && (
+          <p className="form-error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <button type="submit" className="btn btn-primary btn-block" disabled={isLoading}>
+          {isLoading
+            ? t('landing.pleaseWait')
+            : isRegister
+              ? t('landing.createAccount')
+              : t('landing.signInAction')}
+        </button>
+      </form>
+
+      <p className="auth-switch">
+        {isRegister ? t('landing.hasAccount') : t('landing.noAccount')}{' '}
+        <button type="button" className="link-button" onClick={switchMode}>
+          {isRegister ? t('landing.signIn') : t('landing.signUp')}
+        </button>
+      </p>
+
+      <p className="terms-text">
+        {t('landing.termsPrefix')}{' '}
+        <a href="#terms" className="terms-link">
+          {t('landing.terms')}
+        </a>{' '}
+        {t('landing.termsAnd')}{' '}
+        <a href="#privacy" className="terms-link">
+          {t('landing.privacy')}
+        </a>
+        .
+      </p>
+    </>
+  );
+}

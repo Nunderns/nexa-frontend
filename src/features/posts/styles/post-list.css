@@ -1,0 +1,158 @@
+/* ==========================================================================
+   Post list
+   ========================================================================== */
+
+.post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.post-card {
+  display: flex;
+  gap: 4px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.post-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.post-card.skeleton {
+  pointer-events: none;
+}
+
+.post-vote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.vote-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--border-strong);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.vote-btn:hover:not(:disabled) {
+  background: var(--surface-muted);
+}
+
+.vote-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vote-btn.upvote:hover:not(:disabled),
+.vote-btn.upvote.active {
+  color: var(--upvote);
+  background: rgba(239, 90, 60, 0.12);
+}
+
+.vote-btn.downvote:hover:not(:disabled),
+.vote-btn.downvote.active {
+  color: var(--downvote);
+  background: rgba(91, 124, 250, 0.12);
+}
+
+.vote-score {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.post-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+.community-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.community-chip-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.separator {
+  opacity: 0.5;
+}
+
+.post-title {
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.2px;
+}
+
+.post-body {
+  font-size: 14px;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.post-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.action-btn-static {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .post-card {
+    padding: 10px;
+  }
+
+  .post-vote {
+    width: 34px;
+  }
+}
