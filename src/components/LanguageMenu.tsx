@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { LOCALES, useI18n } from '../i18n/I18nContext';
-import { useDismissable } from '../hooks/useDismissable';
+import { LOCALES, useI18n } from '@/lib/i18n/I18nContext';
+import { useDismissable } from '@/hooks/useDismissable';
 import { RiGlobalLine } from "react-icons/ri";
 
 /**

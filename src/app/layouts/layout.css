@@ -1,0 +1,249 @@
+/* ==========================================================================
+   Home layout
+   ========================================================================== */
+
+.home-shell {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.home-header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Wider bar: it now carries search plus five actions. */
+.home-header-inner-wide {
+  max-width: 1280px;
+  gap: 14px;
+}
+
+.home-header-search {
+  flex: 1;
+  min-width: 0;
+  max-width: 420px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  color: var(--brand);
+}
+
+.brand-name {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text-strong);
+  letter-spacing: -0.4px;
+}
+
+.home-layout {
+  flex: 1;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 288px;
+  gap: 24px;
+  align-items: start;
+}
+
+.home-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.home-sidebar {
+  position: sticky;
+  top: calc(var(--header-height) + 24px);
+}
+
+/* ==========================================================================
+   User menu
+   ========================================================================== */
+
+.user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-menu-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px 0 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-strong);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.user-menu-trigger:hover {
+  background: var(--surface-muted);
+}
+
+/* Avatar-only variant: the trigger is just the profile picture. */
+.user-menu-trigger-avatar {
+  padding: 3px;
+  height: auto;
+  border-radius: 50%;
+  background: transparent;
+  border-color: transparent;
+}
+
+.user-menu-trigger-avatar:hover {
+  background: var(--surface-muted);
+  border-color: var(--border);
+}
+
+.user-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  width: 232px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  animation: menu-in 0.14s ease-out;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-menu-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.user-menu-panel-identity {
+  min-width: 0;
+}
+
+.user-menu-panel-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.user-menu-panel-email {
+  font-size: 12px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+}
+
+.user-menu-item {
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-strong);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.user-menu-item:hover {
+  background: var(--surface-muted);
+}
+
+.user-menu-item-danger {
+  color: var(--danger);
+}
+
+.user-menu-item-danger:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+@media (max-width: 900px) {
+  .home-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-sidebar {
+    position: static;
+    order: -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .home-header-inner-wide {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 16px;
+  }
+
+  .home-header-search {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .topbar-actions {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-layout {
+    padding: 16px 12px 36px;
+  }
+
+  .home-header-cta {
+    padding: 0 12px;
+  }
+}

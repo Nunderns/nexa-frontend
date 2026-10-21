@@ -1,0 +1,103 @@
+/* ==========================================================================
+   Topbar icon buttons and popovers
+   ========================================================================== */
+
+.menu-anchor {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 36px;
+  padding: 0 9px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: var(--surface-muted);
+  color: var(--text-strong);
+}
+
+.icon-btn.active {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.icon-btn-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.menu-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  z-index: 60;
+  min-width: 180px;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  animation: menu-in 0.14s ease-out;
+}
+
+.menu-pop-right {
+  right: 0;
+}
+
+.menu-pop-title {
+  padding: 6px 10px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+
+.menu-pop-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-strong);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-pop-item:hover {
+  background: var(--surface-muted);
+}
+
+.menu-pop-item.active {
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.menu-pop-check {
+  width: 12px;
+  flex-shrink: 0;
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .icon-btn-tag {
+    display: none;
+  }
+}
