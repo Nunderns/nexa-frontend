@@ -1,0 +1,27 @@
+/*
+ * Stylesheet entry. Every rule is global, so import order is the cascade:
+ * several elements combine classes from different files (`tab post-type-tab`,
+ * `menu-pop user-menu-panel`, `community-chip community-chip-link`), and the
+ * later file must keep winning. Add new files where their section belongs,
+ * not at the end by default.
+ */
+@import '../styles/tokens.css';
+@import '../styles/base.css';
+@import '../styles/primitives.css';
+@import '../styles/menus.css';
+@import '../features/auth/styles/auth.css';
+@import './layouts/layout.css';
+@import '../features/search/styles/search.css';
+@import '../styles/feed.css';
+@import '../features/posts/styles/post-list.css';
+@import '../features/communities/styles/sidebar.css';
+@import '../features/posts/styles/composer.css';
+@import '../features/users/styles/profile.css';
+@import '../features/chat/styles/chat.css';
+@import '../features/users/styles/settings.css';
+@import '../styles/tabs.css';
+@import '../features/comments/styles/comment-card.css';
+@import '../features/posts/styles/post-detail.css';
+@import '../features/posts/styles/insights.css';
+@import '../features/communities/styles/community-page.css';
+@import '../features/notifications/styles/notifications.css';

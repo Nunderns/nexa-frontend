@@ -1,0 +1,67 @@
+/* ==========================================================================
+   Feed toolbar and states
+   ========================================================================== */
+
+.feed-toolbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 4px;
+}
+
+.feed-heading {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.feed-count {
+  font-size: 13px;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.load-more {
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+}
+
+.feed-empty,
+.feed-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.feed-empty h2 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.feed-empty p,
+.feed-error p {
+  font-size: 14px;
+  max-width: 42ch;
+}
+
+.feed-error p {
+  color: var(--danger);
+}
+
+.feed-error {
+  border-color: var(--danger);
+}
+
+@media (max-width: 640px) {
+  .feed-toolbar {
+    flex-wrap: wrap;
+  }
+}
