@@ -9,6 +9,7 @@ import { HomePage } from './routes/HomePage';
 import { LoginPage } from './routes/LoginPage';
 import { NotFoundPage } from './routes/NotFoundPage';
 import { NotificationsPage } from './routes/NotificationsPage';
+import { PopularPage } from './routes/PopularPage';
 import { PostDetailPage } from './routes/PostDetailPage';
 import { ProfilePage } from './routes/profile/ProfilePage';
 import { SearchPage } from './routes/SearchPage';
@@ -28,6 +29,7 @@ export function AppRouter() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/home" element={<HomePage />} />
+        <Route path="/popular/:sort?" element={<PopularPage />} />
         <Route path="/posts/:postId" element={<PostDetailPage />} />
         <Route path="/c/:name" element={<CommunityPage />} />
         <Route path="/c/:name/mod" element={<CommunityModPage />} />

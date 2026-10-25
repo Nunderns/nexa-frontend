@@ -43,6 +43,17 @@ export function TopBar({ showCreatePost = false, onCreatePost, composerOpen }: T
           <LanguageMenu />
 
           <NavLink
+            to="/popular"
+            className={({ isActive }) => `icon-btn ${isActive ? 'active' : ''}`}
+            aria-label={t('nav.popular')}
+            title={t('nav.popular')}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+              <path d="M3 17l6-6 4 4 8-8M15 7h6v6" />
+            </svg>
+          </NavLink>
+
+          <NavLink
             to="/chat"
             className={({ isActive }) => `icon-btn ${isActive ? 'active' : ''}`}
             aria-label={t('nav.chat')}

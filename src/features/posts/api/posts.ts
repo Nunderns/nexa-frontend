@@ -1,6 +1,7 @@
 import { request } from '@/lib/api-client';
 import type { CreatePostDTO, Paginated, Post } from '@/types/api';
 import type { PostInsights, PostViewBeacon } from '../types/insights';
+import type { PopularSort, PopularTimeWindow } from '../utils/popular';
 
 /**
  * `sortBy` is deliberately not sent.
@@ -15,6 +16,15 @@ import type { PostInsights, PostViewBeacon } from '../types/insights';
 export const postsApi = {
   getAll: (page = 1, limit = 10) =>
     request<Paginated<Post>>({ method: 'GET', url: '/posts', params: { page, limit } }),
+
+  /** Public communities only; `geo` keeps posts read from that country. */
+  getPopular: (params: {
+    sort: PopularSort;
+    t: PopularTimeWindow;
+    geo?: string;
+    page: number;
+    limit: number;
+  }) => request<Paginated<Post>>({ method: 'GET', url: '/posts/popular', params }),
 
   getById: (id: number) => request<Post>({ method: 'GET', url: `/posts/${id}` }),
 
