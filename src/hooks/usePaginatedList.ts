@@ -72,6 +72,7 @@ export function usePaginatedList<T>(key: unknown, fetchPage: (page: number) => P
 
   return {
     items,
+    total,
     loading,
     loadingMore,
     error,
